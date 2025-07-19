@@ -1,0 +1,56 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: cb24b9329d2e4473b36d8b8b529825d8
+      name: Templates/Homepower
+  templates:
+    - uuid: 6263fde82ca44cce9c57844c356a77c6
+      template: Panasonic_AiSEG2
+      name: Panasonic_AiSEG2
+      groups:
+        - name: Templates/Homepower
+      items:
+        - uuid: e4e0f2c324c5480fa3509b725fd1c7f4
+          name: 1日の使用電力量
+          type: TRAP
+          key: AiSEG.today.power.consumption
+          trends: 3650d
+          units: kWh
+        - uuid: 732c00cbda6440b0bf906db664b496d0
+          name: 1日の発電量
+          type: TRAP
+          key: AiSEG.today.power.generation
+          trends: 3650d
+          units: kWh
+        - uuid: e9f0fe10e1884719abb9fbf7600d950c
+          name: 1日の買電量
+          type: TRAP
+          key: AiSEG.today.power.purchase
+          trends: 3650d
+          units: kWh
+        - uuid: 04d802cef49a4c59b74351acd17070a7
+          name: 1日の売電量
+          type: TRAP
+          key: AiSEG.today.power.sales
+          trends: 3650d
+          units: kWh
+      discovery_rules:
+        - uuid: a4988075d5b444d5a6315b312fe13325
+          name: 回路ごとの使用電力量
+          type: TRAP
+          key: consumption.circuit.discovery
+          lifetime: 365d
+          enabled_lifetime_type: DISABLE_AFTER
+          enabled_lifetime: 7d
+          item_prototypes:
+            - uuid: a8f26db20d504f9bb09617a1c49e9bb1
+              name: '使用電力量({#CIRCUITNAME})'
+              type: TRAP
+              key: 'circuit.consumption[{#CIRCUITID}]'
+              trends: 3650d
+              units: kWh
+          lld_macro_paths:
+            - lld_macro: '{#CIRCUITID}'
+              path: $.circuitid
+            - lld_macro: '{#CIRCUITNAME}'
+              path: $.circuitname
