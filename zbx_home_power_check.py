@@ -1,6 +1,7 @@
 import json
 import base64
 import configparser
+import os
 import socket
 import struct
 import time
@@ -68,14 +69,17 @@ def get_power_details(config_ini, zbx_sender):
     # データ送付
     items = []
     for data in circuit_list:
-        items.append(ItemValue(config_ini["Zabbix"]["HostName"], f"circuit.consumption[{data["{#CIRCUITID}"]}]", data["power"]))
+        items.append(ItemValue(config_ini["Zabbix"]["HostName"], f"circuit.consumption[{data['{#CIRCUITID}']}]", data["power"]))
     zbx_sender.send(items)
 
 
 def main():
+    # ファイルパス取得
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+
     # config読み込み
     config_ini = configparser.ConfigParser()
-    config_ini.read("config.ini", encoding="utf-8")
+    config_ini.read(os.path.join(base_dir, "config.ini"), encoding="utf-8")
 
     # Zabbix Sender設定
     sender = Sender(server=config_ini["Zabbix"]["Server"], port=int(config_ini["Zabbix"]["Port"]))
