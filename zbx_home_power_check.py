@@ -62,7 +62,6 @@ def get_power_details(config_ini, zbx_sender):
 
     # LLDsender前処理
     data = json.dumps({'data': circuit_list})
-
     # LLD送付
     zbx_sender.send_value(config_ini["Zabbix"]["HostName"], "consumption.circuit.discovery", data)
 
